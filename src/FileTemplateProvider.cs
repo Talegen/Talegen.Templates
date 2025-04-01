@@ -81,7 +81,7 @@ namespace Talegen.Templates
         public string GetTemplate(string templateKey, string themeName = TemplateConstants.DefaultThemeName, TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default)
         {
             string lookupLanguageCode = languageCode != null ? languageCode : this.options.DefaultCultureInfo.TwoLetterISOLanguageName;
-            string lookupKey = $"{lookupLanguageCode}:{templateKey}:{contentType}";
+            string lookupKey = $"{lookupLanguageCode}:{templateKey}:{contentType}".ToLowerInvariant();
 
             if (!templatesCache.ContainsKey(lookupKey))
             {
@@ -93,7 +93,7 @@ namespace Talegen.Templates
 
             // build the content body of the template using passed values
             string themeKey = themeName + TemplateConstants.TemplateTypeExtensions[contentType];
-            string themeContent = themesCache.ContainsKey(themeKey) ? themesCache[themeKey] : string.Empty;
+            string themeContent = themesCache.ContainsKey(themeKey.ToLowerInvariant()) ? themesCache[themeKey] : string.Empty;
             
             return string.IsNullOrWhiteSpace(themeContent) ? 
                 template.Content : 
@@ -121,7 +121,7 @@ namespace Talegen.Templates
                         foreach (var themeFile in themeFiles)
                         {
                             // add the theme to the cache using the name.
-                            themesCache.TryAdd(themeFile.Name, System.IO.File.ReadAllText(themeFile.FullName));
+                            themesCache.TryAdd(themeFile.Name.ToLowerInvariant(), System.IO.File.ReadAllText(themeFile.FullName));
                         }
                     }
                 }
@@ -152,7 +152,7 @@ namespace Talegen.Templates
                         foreach (var extension in TemplateConstants.ExtensionContentTypes.Keys)
                         {
                             // Check if the file extension is valid for the current content type
-                            var templateFilesWithExtension = directory.GetFiles($"*.{extension}"); // Get files with the specific extension
+                            var templateFilesWithExtension = directory.GetFiles($"*{extension}"); // Get files with the specific extension
                             foreach (var file in templateFilesWithExtension)
                             {
                                 string key = System.IO.Path.GetFileNameWithoutExtension(file.Name);
@@ -169,7 +169,7 @@ namespace Talegen.Templates
                                 };
 
                                 // Add to cache with a unique key
-                                templatesCache.TryAdd($"{languageCode}:{key}:{templateType}", template);
+                                templatesCache.TryAdd($"{languageCode}:{key}:{templateType}".ToLowerInvariant(), template);
                             }
                         }
                     }
