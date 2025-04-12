@@ -80,7 +80,7 @@ namespace Talegen.Templates
         /// <exception cref="KeyNotFoundException">Thrown if the template key is not found.</exception>
         public string GetTemplate(string templateKey, string themeName = TemplateConstants.DefaultThemeName, TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default)
         {
-            string lookupLanguageCode = languageCode != null ? languageCode : this.options.DefaultCultureInfo.TwoLetterISOLanguageName;
+            string lookupLanguageCode = !string.IsNullOrWhiteSpace(languageCode) ? languageCode : TemplateConstants.DefaultLanguageCode;
             string lookupKey = $"{lookupLanguageCode}:{templateKey}:{contentType}".ToLowerInvariant();
 
             if (!templatesCache.ContainsKey(lookupKey))
@@ -93,7 +93,7 @@ namespace Talegen.Templates
 
             // build the content body of the template using passed values
             string themeKey = themeName + TemplateConstants.TemplateTypeExtensions[contentType];
-            string themeContent = themesCache.ContainsKey(themeKey.ToLowerInvariant()) ? themesCache[themeKey] : string.Empty;
+            string themeContent = themesCache.ContainsKey(themeKey.ToLowerInvariant()) ? themesCache[themeKey.ToLowerInvariant()] : string.Empty;
             
             return string.IsNullOrWhiteSpace(themeContent) ? 
                 template.Content : 
@@ -123,6 +123,10 @@ namespace Talegen.Templates
                             // add the theme to the cache using the name.
                             themesCache.TryAdd(themeFile.Name.ToLowerInvariant(), System.IO.File.ReadAllText(themeFile.FullName));
                         }
+                    }
+                    else
+                    {
+                        throw new DirectoryNotFoundException(string.Format(Properties.Resources.TemplatePathNotFoundErrorText, themesDirectory.FullName));
                     }
                 }
 

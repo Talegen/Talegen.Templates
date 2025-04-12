@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
     <Title>Talegen Fancy Template Library</Title>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Company>Talegen, LLC</Company>
     <Authors>TalegenInc</Authors>
     <Description>A simple message template library</Description>
