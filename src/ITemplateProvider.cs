@@ -31,7 +31,7 @@ namespace Talegen.Templates
         /// <param name="contentType">Contains the optional content type to define the type of theme content to return.</param>
         /// <param name="languageCode">The language code for the template.</param>
         /// <returns>Returns the message with token values replaced.</returns>
-        public string GetMessage(string templateKey, Dictionary<string, string> tokenValueDictionary, string themeName = "default", TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default);
+        public string GetMessage(string templateKey, Dictionary<string, string> tokenValueDictionary, string themeName = TemplateConstants.DefaultThemeName, TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default);
 
         /// <summary>
         /// Gets the template by its unique key and language code.
@@ -41,7 +41,7 @@ namespace Talegen.Templates
         /// <param name="contentType">Contains the optional content type to define the type of theme content to return.</param>
         /// <param name="languageCode">The language code for the template.</param>
         /// <returns>The template content as a string, or null if not found.</returns>
-        string GetTemplate(string templateKey, string themeName = "default", TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default);
+        string GetTemplate(string templateKey, string themeName = TemplateConstants.DefaultThemeName, TemplateContentType contentType = TemplateContentType.Text, string? languageCode = default);
 
 
     }

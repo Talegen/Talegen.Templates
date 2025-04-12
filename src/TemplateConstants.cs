@@ -22,7 +22,7 @@ namespace Talegen.Templates
     /// </summary>
     public static class TemplateConstants
     {
-        public const string DefaultThemeName = "default";
+        public const string DefaultThemeName = "main";
         public const string DefaultLanguageCode = "en";
         public const string TextContentType = "text/plain";
         public const string HtmlContentType = "text/html";
