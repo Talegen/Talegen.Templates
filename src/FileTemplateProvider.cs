@@ -92,7 +92,7 @@ namespace Talegen.Templates
             Template template = templatesCache[lookupKey];
 
             // build the content body of the template using passed values
-            string themeKey = themeName + TemplateConstants.TemplateTypeExtensions[contentType];
+            string themeKey = $"{lookupLanguageCode}_{themeName}{TemplateConstants.TemplateTypeExtensions[contentType]}";
             string themeContent = themesCache.ContainsKey(themeKey.ToLowerInvariant()) ? themesCache[themeKey.ToLowerInvariant()] : string.Empty;
             
             return string.IsNullOrWhiteSpace(themeContent) ? 
@@ -116,12 +116,27 @@ namespace Talegen.Templates
 
                     if (themesDirectory.Exists)
                     {
-                        var themeFiles = themesDirectory.GetFiles("*.*");
+                        var allCultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.AllCultures);
+                        var cultureDirectories = themesDirectory.GetDirectories();
 
-                        foreach (var themeFile in themeFiles)
+                        // Iterate through each directory to find language codes
+                        foreach (var directory in cultureDirectories)
                         {
-                            // add the theme to the cache using the name.
-                            themesCache.TryAdd(themeFile.Name.ToLowerInvariant(), System.IO.File.ReadAllText(themeFile.FullName));
+                            string languageCode = directory.Name; // Use the directory name as the language code
+
+                            // if directory name is not 2 letters long, or not a valid format language-culture code (en-US, fr-FR, etc.), skip it
+                            if (languageCode.Length != 2 || !allCultures.Any(c => c.Name.Equals(languageCode, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                continue; // Skip invalid language codes
+                            }
+
+                            var themeFiles = directory.GetFiles("*.*");
+
+                            foreach (var themeFile in themeFiles)
+                            {
+                                // add the theme to the cache using the name.
+                                themesCache.TryAdd(languageCode + "_" + themeFile.Name.ToLowerInvariant(), System.IO.File.ReadAllText(themeFile.FullName));
+                            }
                         }
                     }
                     else
@@ -145,7 +160,7 @@ namespace Talegen.Templates
                         string languageCode = directory.Name; // Use the directory name as the language code
 
                         // if directory name is not 2 letters long, or not a valid format language-culture code (en-US, fr-FR, etc.), skip it
-                        if (languageCode.Length != 2 && !allCultures.Any(c => c.Name.Equals(languageCode, StringComparison.OrdinalIgnoreCase)))
+                        if (languageCode.Length != 2 || !allCultures.Any(c => c.Name.Equals(languageCode, StringComparison.OrdinalIgnoreCase)))
                         {
                             continue; // Skip invalid language codes
                         }
